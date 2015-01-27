@@ -10,30 +10,31 @@ import utils.StopWatch;
 
 public class DivideAndConquer {
 
-
+	private static int arrayInt[];
+	
 	public static void main(String[] args) {
 		//read integer array from file
-		String filename = System.getProperty("user.dir")+"\\src\\week1\\IntegerArray.txt";
-		int array[];
-		try {
-			array = readLines(filename);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println(array.length);
-		if(array.length==0){
-			array = new int[]{1,3,5,2,4,6};
-		}
+//		String filename = System.getProperty("user.dir")+"\\src\\week1\\IntegerArray.txt";
+//		
+//		try {
+//			arrayInt = readLines(filename);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println(arrayInt.length);
+//		if(arrayInt.length==0){
+			arrayInt = new int[]{1,3,5,2,4,6};
+//		}
 		//brute force count inversions for 100,000 integers
 		StopWatch stopWatch1 = new StopWatch();
-		long count1 = bruteforceCountInversions(array);
+		long count1 = bruteforceCountInversions(arrayInt);
 		int spendTime1 = stopWatch1.elapseTime();
 		System.out.println("Total Spend Time for bruteforce count inversion is "+spendTime1+"s");
 		System.out.println("Total inversion count is "+count1);
 		
-		//
+		//divide and conquer count inversions for 100,000 integers
 		StopWatch stopWatch2 = new StopWatch();
-		long count2 = countInversions(array,0,array.length-1);
+		long count2 = countInversions(arrayInt,0,arrayInt.length-1);
 		int spendTime2 = stopWatch2.elapseTime();
 		System.out.println("Total Spend Time for divide and conquer count inversion is "+spendTime2+"s");
 		System.out.println("Total inversion count is "+count2);
@@ -47,24 +48,36 @@ public class DivideAndConquer {
 			int middle = (start+end)/2;
 			long x = countInversions(array,0,middle);
 			long y = countInversions(array, middle+1, end);
-			return x+y+countMergeInversions(array,0,middle+1,end);
+			return x+y+countMergeInversions(array,0,middle,end);
 		}
 	}
 	
-	private static long countMergeInversions(List<Integer> array, int start,
+	private static long countMergeInversions(int[] array, int start,
 			int middle, int end) {
 		long count = 0;
+		int[] helpers = new int[array.length];
+		for(int i=0;i<array.length;i++){
+			helpers[i] = array[i];
+		}
 		int firstIndex = start;
-		int lastIndex = middle;
-		for(int i=start ;i<=end;i++){
-			if(firstIndex == middle-1 || lastIndex == end)
-				break;
-			if(array.get(firstIndex)<=array.get(lastIndex)){
+		int middleIndex = middle+1;
+		int arrayIndex = start;
+		while(firstIndex <= middle && middleIndex <=end){
+			if(helpers[firstIndex] <=helpers[middleIndex]){
+				array[start] = helpers[firstIndex];
 				firstIndex++;
 			}else{
+				array[start] = helpers[middleIndex];
+				middleIndex++;
 				count++;
-				lastIndex++;
 			}
+			arrayIndex++;
+		}
+		while(firstIndex<=middle){
+			array[arrayIndex] = helpers[firstIndex];
+			arrayIndex++;
+			firstIndex++;
+			count += (end-middle);
 		}
 		return count;
 	}
