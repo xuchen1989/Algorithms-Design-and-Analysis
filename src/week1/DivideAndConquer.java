@@ -21,10 +21,7 @@ public class DivideAndConquer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(arrayInt.length);
-//		if(arrayInt.length==0){
-//			arrayInt = new int[]{1,3,5,2,4,6};
-//		}
+		
 		//brute force count inversions for 100,000 integers
 		StopWatch stopWatch1 = new StopWatch();
 		long count1 = bruteforceCountInversions(arrayInt);
@@ -44,13 +41,12 @@ public class DivideAndConquer {
 	private static long countInversions(int start,int end) {
 		if(start == end){
 			return 0;
-		}else if (start <end){
+		}else{
 			int middle = (start+end)/2;
 			long x = countInversions(start,middle);
 			long y = countInversions( middle+1, end);
-			return x+y+countMergeInversions(0,middle,end);
+			return x+y+countMergeInversions(start,middle,end);
 		}
-		return 0;
 	}
 	
 	private static long countMergeInversions(int start,
@@ -63,26 +59,23 @@ public class DivideAndConquer {
 		int firstIndex = start;
 		int middleIndex = middle+1;
 		int arrayIndex = start;
-		while(firstIndex <= middle && middleIndex <=end){
-			if(helpers[firstIndex] <=helpers[middleIndex]){
+		while((firstIndex <= middle) && (middleIndex <=end)){
+			if(helpers[firstIndex] <= helpers[middleIndex]){
 				arrayInt[arrayIndex] = helpers[firstIndex];
 				firstIndex++;
 			}else{
 				arrayInt[arrayIndex] = helpers[middleIndex];
+				count += (middle-firstIndex+1);
 				middleIndex++;
-				count++;
 			}
 			arrayIndex++;
 		}
+
 		while(firstIndex<=middle){
 			arrayInt[arrayIndex] = helpers[firstIndex];
 			arrayIndex++;
 			firstIndex++;
-			count += (end-middle);
 		}
-		for(int i=0;i<=end;i++)
-			System.out.print(arrayInt[i]);
-		System.out.println();
 		return count;
 	}
 
