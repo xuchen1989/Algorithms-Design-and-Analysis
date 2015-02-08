@@ -42,7 +42,12 @@ public class QuickSort {
 	public static int partition(int[] array,int left ,int right){
 		if(array ==null || array.length ==0)
 			return -1;
-		int pivot = array[left];
+		int pivotIndex = choosePivot(array,left,right);
+		int pivot = array[pivotIndex];
+		if(pivotIndex!=left){
+			array[pivotIndex] = array[left];
+			array[left] = pivot;
+		}
 		int i = left+1;
 		for(int j=left+1;j<=right;j++){
 			if(array[j]<pivot){
@@ -55,6 +60,35 @@ public class QuickSort {
 		array[left] = array[i-1];
 		array[i-1] = pivot;
 		return i-1;
+	}
+
+	private static int choosePivot(int[] array, int left, int right) {
+		int length = right-left+1;
+		int middle = left+length/2;
+		if(length%2==0){
+			middle--;
+		}
+		if(array[left]>array[right]){
+			if(array[middle]>array[left]){
+				return left;
+			}else{
+				if(array[middle]>array[right]){
+					return middle;
+				}else{
+					return right;
+				}
+			}
+		}else{
+			if(array[middle]>array[right]){
+				return right;
+			}else{
+				if(array[middle]>array[left]){
+					return middle;
+				}else{
+					return left;
+				}
+			}
+		}
 	}
 
 }
